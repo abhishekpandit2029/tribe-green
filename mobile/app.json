@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "name": "Tribe Green",
+    "slug": "tribe-green-gifting",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": { "backgroundColor": "#f8f6f0" },
+    "assetBundlePatterns": ["**/*"],
+    "android": { "package": "com.tribegreen.gifting", "versionCode": 1 }
+  }
+}
