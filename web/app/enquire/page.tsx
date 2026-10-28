@@ -1,13 +1,19 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowUpRight } from "lucide-react";
 import {
   BUDGETS,
   CUSTOMISATIONS,
   OCCASIONS,
   PRODUCTS,
 } from "../../data/catalogue";
-import { ThankYou } from "../ui";
+import { ThankYou } from "../../components/enquiry/ThankYou";
+import {
+  CheckboxGroup,
+  FormField,
+} from "../../components/enquiry/EnquiryFormControls";
 export default function EnquirePage() {
   const [initial, setInitial] = useState("");
   const [submitted, setSubmitted] = useState(""),
@@ -99,34 +105,29 @@ export default function EnquirePage() {
           <span>01 — 03</span>
         </div>
         <div className="form-grid">
-          <label>
-            Your name *
+          <FormField label="Your name *">
             <input name="name" placeholder="e.g. Aanya Sharma" required />
-          </label>
-          <label>
-            Company *
+          </FormField>
+          <FormField label="Company *">
             <input name="company" placeholder="Company name" required />
-          </label>
-          <label>
-            Email address *
+          </FormField>
+          <FormField label="Email address *">
             <input
               name="email"
               type="email"
               placeholder="you@company.com"
               required
             />
-          </label>
-          <label>
-            Phone number *
+          </FormField>
+          <FormField label="Phone number *">
             <input
               name="phone"
               type="tel"
               placeholder="+91 98765 43210"
               required
             />
-          </label>
-          <label>
-            What are we celebrating? *
+          </FormField>
+          <FormField label="What are we celebrating? *">
             <select name="occasion" required defaultValue="">
               <option value="" disabled>
                 Select an occasion
@@ -135,9 +136,8 @@ export default function EnquirePage() {
                 <option key={x}>{x}</option>
               ))}
             </select>
-          </label>
-          <label>
-            Number of gifts *
+          </FormField>
+          <FormField label="Number of gifts *">
             <input
               name="units"
               type="number"
@@ -145,9 +145,8 @@ export default function EnquirePage() {
               placeholder="e.g. 50"
               required
             />
-          </label>
-          <label>
-            Budget per gift *
+          </FormField>
+          <FormField label="Budget per gift *">
             <select name="budget" required defaultValue="">
               <option value="" disabled>
                 Select a budget
@@ -156,61 +155,53 @@ export default function EnquirePage() {
                 <option key={x}>{x}</option>
               ))}
             </select>
-          </label>
-          <label>
-            Ideal delivery date
+          </FormField>
+          <FormField label="Ideal delivery date">
             <input name="deliveryDate" type="date" />
-          </label>
+          </FormField>
         </div>
-        <fieldset>
-          <legend>Anything caught your eye?</legend>
-          <div className="check-grid">
-            {PRODUCTS.map((p) => (
-              <label className="check-label" key={p.id}>
-                <input
-                  type="checkbox"
-                  name="products"
-                  value={p.name}
-                  defaultChecked={p.id === initial}
-                />
-                <span>{p.name}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <fieldset>
-          <legend>Make it yours</legend>
-          <div className="check-grid">
-            {CUSTOMISATIONS.map((c) => (
-              <label className="check-label" key={c}>
-                <input type="checkbox" name="customisations" value={c} />
-                <span>{c}</span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-        <label className="message-label">
-          Anything else we should know?
+        <CheckboxGroup
+          legend="Anything caught your eye?"
+          name="products"
+          options={PRODUCTS.map((product) => ({
+            value: product.name,
+            id: product.id,
+          }))}
+          checked={(product) => product.id === initial}
+        />
+        <CheckboxGroup
+          legend="Make it yours"
+          name="customisations"
+          options={CUSTOMISATIONS.map((customisation) => ({
+            value: customisation,
+            id: customisation,
+          }))}
+        />
+        <FormField
+          label="Anything else we should know?"
+          className="message-label"
+        >
           <textarea
             name="message"
             rows={4}
             placeholder="A colour, a feeling, an idea…"
           />
-        </label>
+        </FormField>
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
         <button className="button button-dark submit-button" type="submit">
-          Send your enquiry <span>↗</span>
+          Send your enquiry <ArrowUpRight aria-hidden="true" />
         </button>
         <p className="privacy-note">
           By sending this form, you agree to be contacted about your gifting
           enquiry.
         </p>
         <Link className="back-link" href="/">
-          ← Back to the collection
+          <ArrowLeft aria-hidden="true" />
+          Back to the collection
         </Link>
       </form>
     </main>

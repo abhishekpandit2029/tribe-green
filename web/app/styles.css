@@ -113,8 +113,21 @@ button {
   color: var(--green);
 }
 
-.nav a span {
+.nav a svg {
   margin-left: 15px;
+}
+
+.nav a svg,
+.footer a svg,
+.admin-empty a svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -3px;
+}
+
+.footer a svg,
+.admin-empty a svg {
+  margin-left: 4px;
 }
 
 .menu-toggle {
@@ -123,6 +136,11 @@ button {
   background: none;
   font-size: 20px;
   color: var(--green);
+}
+
+.menu-toggle svg {
+  width: 20px;
+  height: 20px;
 }
 
 .hero {
@@ -170,7 +188,7 @@ button {
   color: #849253;
 }
 
-.hero-copy>p {
+.hero-copy > p {
   max-width: 380px;
   color: #686e62;
   font-size: 13px;
@@ -198,9 +216,11 @@ button {
   transform: translateY(-2px);
 }
 
-.button span {
-  font-size: 16px;
-  font-weight: 400;
+.button svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  stroke-width: 1.7;
 }
 
 .button-dark {
@@ -238,7 +258,8 @@ button {
   inset: 0;
   background:
     linear-gradient(0deg, rgba(41, 77, 50, 0.12), transparent),
-    url("https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1300&q=85") center/cover;
+    url("https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=1300&q=85")
+      center/cover;
 }
 
 .sun-disc {
@@ -307,10 +328,16 @@ button {
   padding: 35px 10%;
 }
 
-.promise>span {
+.promise > span {
   font-size: 8px;
   letter-spacing: 1.4px;
   color: #c4cfad;
+}
+
+.promise > span svg {
+  width: 10px;
+  height: 10px;
+  vertical-align: -1px;
 }
 
 .promise p {
@@ -348,7 +375,7 @@ button {
   line-height: 1.12;
 }
 
-.section-heading>p {
+.section-heading > p {
   font-size: 11px;
   line-height: 1.8;
   color: var(--muted);
@@ -449,7 +476,12 @@ button {
   background: var(--paper);
   display: grid;
   place-items: center;
-  font-size: 15px;
+}
+
+.product-arrow svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.6;
 }
 
 .product-info {
@@ -565,8 +597,8 @@ button {
 }
 
 .footer p,
-.footer>a:not(.brand),
-.footer>span {
+.footer > a:not(.brand),
+.footer > span {
   font-size: 9px;
   color: #787b71;
 }
@@ -577,10 +609,18 @@ button {
 }
 
 .back-link {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 10px;
   color: #7b7d73;
   margin: 0 0 24px;
+}
+
+.back-link svg {
+  width: 13px;
+  height: 13px;
+  stroke-width: 1.8;
 }
 
 .detail-grid {
@@ -667,6 +707,13 @@ button {
   padding: 15px;
 }
 
+.whatsapp svg {
+  width: 14px;
+  height: 14px;
+  vertical-align: -3px;
+  margin-right: 4px;
+}
+
 .form-page {
   padding-top: 75px;
   padding-bottom: 100px;
@@ -683,7 +730,7 @@ button {
   font-size: 56px;
 }
 
-.form-intro>p {
+.form-intro > p {
   font-size: 12px;
   color: #6f7468;
   line-height: 1.8;
@@ -844,12 +891,18 @@ button {
   margin: 23px;
 }
 
+.thanks-icon svg {
+  width: 25px;
+  height: 25px;
+  stroke-width: 1.8;
+}
+
 .thanks h2 {
   font: 500 40px var(--display);
   margin: 0;
 }
 
-.thanks>p {
+.thanks > p {
   max-width: 390px;
   font-size: 12px;
   color: #74796c;
@@ -887,8 +940,8 @@ button {
   color: #849253;
 }
 
-.login-card>p,
-.admin-top>div>p {
+.login-card > p,
+.admin-top > div > p {
   font-size: 11px;
   color: #7b7d73;
 }
@@ -903,7 +956,7 @@ button {
   height: 42px;
 }
 
-.login-card>small {
+.login-card > small {
   font-size: 9px;
   color: #8b8c82;
 }
@@ -968,6 +1021,31 @@ button {
   padding: 0 0 14px;
 }
 
+.admin-loading {
+  min-height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #7b7d73;
+  font-size: 10px;
+}
+
+.admin-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--line);
+  border-top-color: var(--green);
+  border-radius: 50%;
+  animation: admin-spin 0.8s linear infinite;
+}
+
+@keyframes admin-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .admin-table-head h2 {
   font: 500 23px var(--display);
   margin: 0;
@@ -991,9 +1069,14 @@ button {
   padding: 65px 20px;
 }
 
-.admin-empty>span {
+.admin-empty > span {
   font-size: 28px;
   color: #8a995e;
+}
+
+.admin-empty > span svg {
+  width: 28px;
+  height: 28px;
 }
 
 .admin-empty h3 {
@@ -1213,7 +1296,7 @@ button {
     margin: 18px 0 13px;
   }
 
-  .hero-copy>p {
+  .hero-copy > p {
     font-size: 12px;
   }
 
@@ -1265,7 +1348,7 @@ button {
     font-size: 23px;
   }
 
-  .promise>span {
+  .promise > span {
     font-size: 7px;
   }
 
@@ -1288,7 +1371,7 @@ button {
     font-size: 40px;
   }
 
-  .section-heading>p {
+  .section-heading > p {
     margin-top: 13px;
   }
 
@@ -1372,12 +1455,12 @@ button {
     order: 3;
   }
 
-  .footer>span {
+  .footer > span {
     order: 4;
     text-align: right;
   }
 
-  .footer>a:not(.brand) {
+  .footer > a:not(.brand) {
     text-align: right;
   }
 
@@ -1415,7 +1498,7 @@ button {
     margin: 16px 0 12px;
   }
 
-  .form-intro>p {
+  .form-intro > p {
     max-width: 350px;
   }
 

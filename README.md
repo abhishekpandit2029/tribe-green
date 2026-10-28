@@ -11,13 +11,13 @@ cd web
 npm install
 ```
 
-Set `DATABASE_URL` to your PostgreSQL connection string, run [`web/supabase/schema.sql`](web/supabase/schema.sql) against that database, and copy `web/.env.example` to `web/.env.local`. Set the admin password and a long random session secret. Keep `DATABASE_URL` server-side. Then start the app:
+Set `DATABASE_URL` to your PostgreSQL connection string, run [`web/supabase/schema.sql`](web/supabase/schema.sql) against that database, and copy `web/.env.example` to `web/.env.local`. Set both `ADMIN_USERNAME` and `ADMIN_PASSWORD` to your chosen credentials, and set a long random session secret. Keep `DATABASE_URL` server-side. Then start the app:
 
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`. The catalogue is `/`, a product detail is `/products/copper-bottle`, enquiry form is `/enquire`, and the admin portal is `/admin` (demo username `admin`, password `admin`).
+Open `http://localhost:3000`. The catalogue is `/`, a product detail is `/products/copper-bottle`, enquiry form is `/enquire`, and the admin portal is `/admin`. Admin login requires the exact `ADMIN_USERNAME` and `ADMIN_PASSWORD` values configured in the server environment (for local development, `web/.env.local`).
 
 ## Deploy and connect both apps
 
@@ -47,7 +47,7 @@ The project targets Android package `com.tribegreen.gifting`. After deploying th
 - **React Native / Expo / TypeScript** for a dedicated Android app with Discover, product detail, enquiry form, and My Enquiries screens.
 - **Separate TypeScript catalogues** in `web/data/catalogue.ts` and `mobile/data/catalogue.ts` each provide the same 9 products and filter values.
 - The Next.js API validates and saves website and mobile enquiries to one PostgreSQL table. The admin route reads that same table, changes statuses, and exports CSV. Mobile also caches its own submitted enquiries in AsyncStorage for the “My enquiries” view.
-- The admin login defaults to `admin` / `admin` only when credentials are not configured. Set a strong `ADMIN_PASSWORD` before deployment. Admin session cookies are HTTP-only and signed using `ADMIN_SESSION_SECRET` (or `DATABASE_URL`).
+- Admin login accepts only the configured `ADMIN_USERNAME` and `ADMIN_PASSWORD`; it is disabled if either value is missing. Admin session cookies are HTTP-only and signed using `ADMIN_SESSION_SECRET` (or `DATABASE_URL`), with the configured credentials bound to the session signature.
 
 ## What I would improve
 

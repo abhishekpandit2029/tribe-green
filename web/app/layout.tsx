@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./styles.css";
-import { SiteHeader, SiteFooter } from "./ui";
+import { SiteHeader } from "../components/layout/SiteHeader";
+import { SiteFooter } from "../components/layout/SiteFooter";
 
 export const metadata: Metadata = {
   metadataBase: new URL(

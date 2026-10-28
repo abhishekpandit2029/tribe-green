@@ -1,27 +1,67 @@
 "use client";
+
 import { useEffect, useMemo, useState } from "react";
-import { Enquiry } from "../../data/catalogue";
-const STATUSES: Enquiry["status"][] = ["New", "Contacted", "Converted", "Lost"];
+import type { FormEvent } from "react";
+import type { Enquiry } from "../../data/catalogue";
+import { AdminDashboard, AdminLogin } from "../../components/admin/AdminViews";
+
 export default function AdminPage() {
-  const [logged, setLogged] = useState(false),
-    [mounted, setMounted] = useState(false),
-    [user, setUser] = useState(""),
-    [pass, setPass] = useState(""),
-    [error, setError] = useState(""),
-    [rows, setRows] = useState<Enquiry[]>([]),
-    [filter, setFilter] = useState("All");
+  const [logged, setLogged] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [user, setUser] = useState("");
+  const [pass, setPass] = useState("");
+  const [error, setError] = useState("");
+  const [rows, setRows] = useState<Enquiry[]>([]);
+  const [loadingEnquiries, setLoadingEnquiries] = useState(false);
+  const [filter, setFilter] = useState("All");
+
   useEffect(() => {
-    // Require an explicit sign-in whenever the portal is opened or refreshed.
-    void fetch("/api/admin/logout", { method: "POST" })
-      .catch(() => {})
-      .finally(() => setMounted(true));
+    let active = true;
+    async function restoreSession() {
+      try {
+        const response = await fetch("/api/admin/session", {
+          cache: "no-store",
+        });
+        const result = await response.json();
+        if (!active) return;
+        if (response.ok && result.authenticated) {
+          setLogged(true);
+          setLoadingEnquiries(true);
+          try {
+            const rowsResponse = await fetch("/api/enquiries", {
+              cache: "no-store",
+            });
+            if (rowsResponse.ok) setRows(await rowsResponse.json());
+            else if (rowsResponse.status === 401) setLogged(false);
+            else
+              setError(
+                "Your session is active, but enquiries could not be loaded.",
+              );
+          } finally {
+            setLoadingEnquiries(false);
+          }
+        }
+      } catch {
+        if (active)
+          setError("Could not check your admin session. Refresh to try again.");
+      } finally {
+        if (active) setAuthChecked(true);
+      }
+    }
+    void restoreSession();
+    return () => {
+      active = false;
+    };
   }, []);
-  const visible = useMemo(
-    () => (filter === "All" ? rows : rows.filter((r) => r.status === filter)),
+
+  const visibleRows = useMemo(
+    () =>
+      filter === "All" ? rows : rows.filter((row) => row.status === filter),
     [rows, filter],
   );
-  async function login(e: React.FormEvent) {
-    e.preventDefault();
+
+  async function login(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
     setError("");
     try {
       const response = await fetch("/api/admin/login", {
@@ -35,17 +75,25 @@ export default function AdminPage() {
         return;
       }
       setLogged(true);
-      const rowsResponse = await fetch("/api/enquiries");
-      if (rowsResponse.ok) setRows(await rowsResponse.json());
+      setLoadingEnquiries(true);
+      try {
+        const rowsResponse = await fetch("/api/enquiries", {
+          cache: "no-store",
+        });
+        if (rowsResponse.ok) setRows(await rowsResponse.json());
+      } finally {
+        setLoadingEnquiries(false);
+      }
     } catch {
       setError("The sign-in service is unavailable.");
     }
   }
-  async function status(id: string, value: Enquiry["status"]) {
+
+  async function updateStatus(id: string, status: Enquiry["status"]) {
     const response = await fetch("/api/enquiries", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id, status: value }),
+      body: JSON.stringify({ id, status }),
     });
     if (response.ok) {
       const updated = await response.json();
@@ -54,12 +102,14 @@ export default function AdminPage() {
       );
     }
   }
+
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" }).catch(() => {});
     setRows([]);
     setLogged(false);
   }
-  function csv() {
+
+  function downloadCsv() {
     const keys = [
       "id",
       "name",
@@ -77,157 +127,46 @@ export default function AdminPage() {
       "status",
       "createdAt",
     ];
-    const quote = (v: unknown) =>
-      `"${String(Array.isArray(v) ? v.join("; ") : (v ?? "")).replaceAll('"', '""')}"`;
-    const body = [
+    const quote = (value: unknown) =>
+      `"${String(Array.isArray(value) ? value.join("; ") : (value ?? "")).replaceAll('"', '""')}"`;
+    const csv = [
       keys.join(","),
-      ...rows.map((r) =>
+      ...rows.map((row) =>
         keys
-          .map((k) => quote((r as unknown as Record<string, unknown>)[k]))
+          .map((key) => quote((row as unknown as Record<string, unknown>)[key]))
           .join(","),
       ),
     ].join("\r\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([body], { type: "text/csv" }));
-    a.download = "tribe-green-enquiries.csv";
-    a.click();
-    URL.revokeObjectURL(a.href);
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
+    link.download = "tribe-green-enquiries.csv";
+    link.click();
+    URL.revokeObjectURL(link.href);
   }
-  if (!mounted) return <main className="admin-page" />;
-  if (!logged)
+
+  if (!authChecked) return <main className="admin-page" />;
+  if (!logged) {
     return (
-      <main className="admin-login">
-        <div className="login-card">
-          <span className="eyebrow">TRIBE GREEN · TEAM PORTAL</span>
-          <div className="brand-mark login-mark">
-            t<span>g</span>
-          </div>
-          <h1>
-            Welcome <em>back.</em>
-          </h1>
-          <p>Sign in to look after the good things coming in.</p>
-          <form onSubmit={login}>
-            <label>
-              Username
-              <input
-                value={user}
-                onChange={(e) => setUser(e.target.value)}
-                autoComplete="username"
-                required
-              />
-            </label>
-            <label>
-              Password
-              <input
-                type="password"
-                value={pass}
-                onChange={(e) => setPass(e.target.value)}
-                autoComplete="current-password"
-                required
-              />
-            </label>
-            {error && <p className="form-error">{error}</p>}
-            <button className="button button-dark full-button">
-              Enter the portal <span>↗</span>
-            </button>
-          </form>
-          <small>Demo access · admin / admin</small>
-        </div>
-      </main>
+      <AdminLogin
+        user={user}
+        pass={pass}
+        error={error}
+        onUserChange={setUser}
+        onPassChange={setPass}
+        onSubmit={login}
+      />
     );
+  }
   return (
-    <main className="admin-page">
-      <div className="admin-top">
-        <div>
-          <span className="eyebrow">TRIBE GREEN · TEAM PORTAL</span>
-          <h1>
-            The good <em>things.</em>
-          </h1>
-          <p>Every thoughtful enquiry, together in one place.</p>
-        </div>
-        <div className="admin-actions">
-          <button className="button button-dark" onClick={csv}>
-            Download CSV <span>↓</span>
-          </button>
-          <button className="logout" onClick={() => void logout()}>
-            Sign out
-          </button>
-        </div>
-      </div>
-      <div className="admin-metrics">
-        <div>
-          <strong>{rows.length}</strong>
-          <span>All enquiries</span>
-        </div>
-        <div>
-          <strong>{rows.filter((r) => r.status === "New").length}</strong>
-          <span>Need a reply</span>
-        </div>
-        <div>
-          <strong>{rows.filter((r) => r.status === "Converted").length}</strong>
-          <span>Made a connection</span>
-        </div>
-      </div>
-      <div className="admin-table-head">
-        <h2>
-          Enquiries <span>{visible.length}</span>
-        </h2>
-        <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-          <option>All</option>
-          {STATUSES.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
-        </select>
-      </div>
-      {visible.length === 0 ? (
-        <div className="admin-empty">
-          <span>✳</span>
-          <h3>Nothing here just yet.</h3>
-          <p>New enquiries from the website and app will appear here.</p>
-          <a href="/enquire">Send a test enquiry ↗</a>
-        </div>
-      ) : (
-        <div className="admin-list">
-          {visible.map((r) => (
-            <article className="admin-row" key={r.id}>
-              <div className="row-meta">
-                <span>{r.id}</span>
-                <span>{new Date(r.createdAt).toLocaleDateString()}</span>
-                <span className="source-chip">{r.source}</span>
-              </div>
-              <div className="row-main">
-                <div>
-                  <h3>
-                    {r.name} <small>at {r.company}</small>
-                  </h3>
-                  <p>
-                    {r.email} · {r.phone}
-                  </p>
-                </div>
-                <select
-                  className={`status-select status-${r.status.toLowerCase()}`}
-                  value={r.status}
-                  onChange={(e) =>
-                    status(r.id, e.target.value as Enquiry["status"])
-                  }
-                >
-                  {STATUSES.map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-              </div>
-              <div className="row-details">
-                <span>
-                  {r.units} gifts · {r.budget}
-                </span>
-                <span>{r.occasion}</span>
-                <span>{r.products.join(", ") || "Gift ideas welcome"}</span>
-              </div>
-              {r.message && <p className="row-message">“{r.message}”</p>}
-            </article>
-          ))}
-        </div>
-      )}
-    </main>
+    <AdminDashboard
+      rows={rows}
+      visibleRows={visibleRows}
+      loadingEnquiries={loadingEnquiries}
+      filter={filter}
+      onFilterChange={setFilter}
+      onStatusChange={updateStatus}
+      onDownload={downloadCsv}
+      onLogout={() => void logout()}
+    />
   );
 }
