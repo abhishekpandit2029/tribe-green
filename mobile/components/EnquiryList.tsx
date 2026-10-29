@@ -12,7 +12,7 @@ export function EnquiryList({
   onExplore: () => void;
 }) {
   return (
-    <ScrollView contentContainerStyle={styles.page}>
+    <ScrollView contentContainerStyle={[styles.page, styles.enquiriesPage]}>
       <Text style={styles.eyebrow}>YOUR THOUGHTFUL THINGS</Text>
       <Text style={styles.sectionTitle}>
         My <Text style={styles.italic}>enquiries.</Text>

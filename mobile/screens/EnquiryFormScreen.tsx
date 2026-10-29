@@ -1,5 +1,10 @@
 import { ScrollView, Text, TextInput, View } from "react-native";
-import { BUDGETS, CUSTOMISATIONS, OCCASIONS } from "../data/catalogue";
+import {
+  BUDGETS,
+  CUSTOMISATIONS,
+  OCCASIONS,
+  PRODUCTS,
+} from "../data/catalogue";
 import type { Product } from "../data/catalogue";
 import { ActionButton, BackButton, Pill } from "../components/AppControls";
 import { styles } from "../theme";
@@ -11,19 +16,20 @@ type Props = {
   phone: string;
   email: string;
   units: string;
-  deliveryDate: string;
-  message: string;
+  giftMessage: string;
+  pickedProducts: string[];
   pickedOccasion: string;
   pickedBudget: string;
   pickedCustom: string[];
   error: string;
+  isSubmitting: boolean;
   onNameChange: (value: string) => void;
   onCompanyChange: (value: string) => void;
   onPhoneChange: (value: string) => void;
   onEmailChange: (value: string) => void;
   onUnitsChange: (value: string) => void;
-  onDeliveryDateChange: (value: string) => void;
-  onMessageChange: (value: string) => void;
+  onGiftMessageChange: (value: string) => void;
+  onProductToggle: (value: string) => void;
   onOccasionChange: (value: string) => void;
   onBudgetChange: (value: string) => void;
   onCustomToggle: (value: string) => void;
@@ -49,7 +55,7 @@ export function EnquiryFormScreen(props: Props) {
       <Text style={styles.formIntro}>
         Tell us a little about the gift you have in mind.
       </Text>
-      <Text style={styles.fieldTitle}>YOUR DETAILS</Text>
+      <Text style={styles.fieldTitle}>THE DETAILS</Text>
       <TextInput
         style={styles.input}
         placeholder="Your name *"
@@ -78,10 +84,17 @@ export function EnquiryFormScreen(props: Props) {
         onChangeText={props.onPhoneChange}
       />
       <PillGroup
-        title="OCCASION *"
+        title="WHAT ARE WE CELEBRATING? *"
         values={OCCASIONS}
         selected={props.pickedOccasion}
         onSelect={props.onOccasionChange}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Number of gifts *"
+        keyboardType="number-pad"
+        value={props.units}
+        onChangeText={props.onUnitsChange}
       />
       <PillGroup
         title="BUDGET PER GIFT *"
@@ -91,17 +104,21 @@ export function EnquiryFormScreen(props: Props) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Number of gifts *"
-        keyboardType="number-pad"
-        value={props.units}
-        onChangeText={props.onUnitsChange}
+        placeholder="Write a note to include with the gifts"
+        value={props.giftMessage}
+        onChangeText={props.onGiftMessageChange}
       />
-      <TextInput
-        style={styles.input}
-        placeholder="Ideal delivery date (YYYY-MM-DD)"
-        value={props.deliveryDate}
-        onChangeText={props.onDeliveryDateChange}
-      />
+      <Text style={styles.fieldTitle}>ANYTHING CAUGHT YOUR EYE?</Text>
+      <View style={styles.wrapPills}>
+        {PRODUCTS.map((item) => (
+          <Pill
+            key={item.id}
+            label={item.name}
+            active={props.pickedProducts.includes(item.name)}
+            onPress={() => props.onProductToggle(item.name)}
+          />
+        ))}
+      </View>
       <Text style={styles.fieldTitle}>MAKE IT YOURS</Text>
       <View style={styles.wrapPills}>
         {CUSTOMISATIONS.map((customisation) => (
@@ -113,15 +130,12 @@ export function EnquiryFormScreen(props: Props) {
           />
         ))}
       </View>
-      <TextInput
-        style={[styles.input, styles.textArea]}
-        placeholder="Anything else we should know?"
-        multiline
-        value={props.message}
-        onChangeText={props.onMessageChange}
-      />
       {props.error ? <Text style={styles.error}>{props.error}</Text> : null}
-      <ActionButton label="Send your enquiry" onPress={props.onSubmit} />
+      <ActionButton
+        label="Send your enquiry"
+        loading={props.isSubmitting}
+        onPress={props.onSubmit}
+      />
     </ScrollView>
   );
 }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowUpRight } from "lucide-react";
+import { ArrowLeft, ArrowUpRight, LoaderCircle } from "lucide-react";
 import {
   BUDGETS,
   CUSTOMISATIONS,
@@ -15,14 +15,24 @@ import {
   FormField,
 } from "../../components/enquiry/EnquiryFormControls";
 export default function EnquirePage() {
-  const [initial, setInitial] = useState("");
+  const [selectedProducts, setSelectedProducts] = useState<string[]>([]);
   const [submitted, setSubmitted] = useState(""),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
-    setInitial(
-      new URLSearchParams(window.location.search).get("product") || "",
+    const productId = new URLSearchParams(window.location.search).get("product");
+    const initialProduct = PRODUCTS.find(
+      (product) => product.id === productId || product.name === productId,
     );
+    if (initialProduct) setSelectedProducts([initialProduct.name]);
   }, []);
+  function toggleProduct(value: string) {
+    setSelectedProducts((current) =>
+      current.includes(value)
+        ? current.filter((product) => product !== value)
+        : [...current, value],
+    );
+  }
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
@@ -50,12 +60,12 @@ export default function EnquirePage() {
       occasion: String(f.get("occasion")),
       units,
       budget: String(f.get("budget")),
-      deliveryDate: String(f.get("deliveryDate")),
       products: f.getAll("products").map(String),
       customisations: f.getAll("customisations").map(String),
-      message: String(f.get("message") || ""),
+      giftMessage: String(f.get("giftMessage") || ""),
       source: "Website",
     };
+    setIsSubmitting(true);
     try {
       const response = await fetch("/api/enquiries", {
         method: "POST",
@@ -72,6 +82,8 @@ export default function EnquirePage() {
       setSubmitted(String(result.name));
     } catch {
       setError("The enquiry service is unavailable. Please try again shortly.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
   if (submitted)
@@ -156,8 +168,11 @@ export default function EnquirePage() {
               ))}
             </select>
           </FormField>
-          <FormField label="Ideal delivery date">
-            <input name="deliveryDate" type="date" />
+          <FormField label="Gift message">
+            <input
+              name="giftMessage"
+              placeholder="Write a note to include with the gifts"
+            />
           </FormField>
         </div>
         <CheckboxGroup
@@ -167,7 +182,8 @@ export default function EnquirePage() {
             value: product.name,
             id: product.id,
           }))}
-          checked={(product) => product.id === initial}
+          selectedValues={selectedProducts}
+          onToggle={toggleProduct}
         />
         <CheckboxGroup
           legend="Make it yours"
@@ -177,23 +193,27 @@ export default function EnquirePage() {
             id: customisation,
           }))}
         />
-        <FormField
-          label="Anything else we should know?"
-          className="message-label"
-        >
-          <textarea
-            name="message"
-            rows={4}
-            placeholder="A colour, a feeling, an idea…"
-          />
-        </FormField>
         {error && (
           <p className="form-error" role="alert">
             {error}
           </p>
         )}
-        <button className="button button-dark submit-button" type="submit">
-          Send your enquiry <ArrowUpRight aria-hidden="true" />
+        <button
+          className="button button-dark submit-button"
+          type="submit"
+          disabled={isSubmitting}
+          aria-busy={isSubmitting}
+        >
+          {isSubmitting ? (
+            <>
+              Submitting your enquiry…
+              <LoaderCircle className="submit-spinner" aria-hidden="true" />
+            </>
+          ) : (
+            <>
+              Send your enquiry <ArrowUpRight aria-hidden="true" />
+            </>
+          )}
         </button>
         <p className="privacy-note">
           By sending this form, you agree to be contacted about your gifting

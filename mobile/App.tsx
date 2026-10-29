@@ -13,7 +13,7 @@ import { C, styles } from "./theme";
 
 type Tab = "Discover" | "My gifts";
 const KEY = "tribe-green-mobile-enquiries-v1";
-const API_BASE_URL = process.env.EXPO_PUBLIC_API_URL || "http://10.0.2.2:3000";
+const API_BASE_URL = (process.env.EXPO_PUBLIC_API_URL || "").replace(/\/+$/, "");
 export default function App() {
   const [tab, setTab] = useState<Tab>("Discover"),
     [category, setCategory] = useState("All gifts"),
@@ -29,12 +29,13 @@ export default function App() {
     [phone, setPhone] = useState(""),
     [email, setEmail] = useState(""),
     [units, setUnits] = useState(""),
-    [deliveryDate, setDeliveryDate] = useState(""),
-    [message, setMessage] = useState(""),
+    [giftMessage, setGiftMessage] = useState(""),
+    [pickedProducts, setPickedProducts] = useState<string[]>([]),
     [pickedOccasion, setPickedOccasion] = useState(""),
     [pickedBudget, setPickedBudget] = useState(""),
     [pickedCustom, setPickedCustom] = useState<string[]>([]),
-    [error, setError] = useState("");
+    [error, setError] = useState(""),
+    [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     AsyncStorage.getItem(KEY)
       .then((value) => value && setEnquiries(JSON.parse(value)))
@@ -60,6 +61,7 @@ export default function App() {
   );
   function startEnquiry(p: Product | null) {
     setProduct(p);
+    setPickedProducts(p ? [p.name] : []);
     setPickedOccasion(p?.occasions[0] || "");
     setPickedBudget("");
     setPickedCustom([]);
@@ -68,6 +70,7 @@ export default function App() {
     setThanks(false);
   }
   async function send() {
+    if (isSubmitting) return;
     const digits = phone.replace(/\D/g, "");
     if (!name.trim() || !company.trim()) {
       setError("Please add your name and company.");
@@ -98,16 +101,16 @@ export default function App() {
       occasion: pickedOccasion,
       units: Number(units),
       budget: pickedBudget,
-      deliveryDate,
-      products: product ? [product.name] : [],
+      products: pickedProducts,
       customisations: pickedCustom,
-      message,
+      giftMessage,
       source: "Mobile app",
       status: "New",
       createdAt: new Date().toISOString(),
     };
+    setIsSubmitting(true);
     try {
-      const response = await fetch(API_BASE_URL + "/api/enquiries", {
+      const response = await fetch(`${API_BASE_URL}/api/enquiries`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(item),
@@ -125,6 +128,8 @@ export default function App() {
       setError(
         "Cannot reach the enquiry service. Check your connection and try again.",
       );
+    } finally {
+      setIsSubmitting(false);
     }
   }
   const reset = () => {
@@ -147,19 +152,26 @@ export default function App() {
           phone={phone}
           email={email}
           units={units}
-          deliveryDate={deliveryDate}
-          message={message}
+          giftMessage={giftMessage}
+          pickedProducts={pickedProducts}
           pickedOccasion={pickedOccasion}
           pickedBudget={pickedBudget}
           pickedCustom={pickedCustom}
+          isSubmitting={isSubmitting}
           error={error}
           onNameChange={setName}
           onCompanyChange={setCompany}
           onPhoneChange={setPhone}
           onEmailChange={setEmail}
           onUnitsChange={setUnits}
-          onDeliveryDateChange={setDeliveryDate}
-          onMessageChange={setMessage}
+          onGiftMessageChange={setGiftMessage}
+          onProductToggle={(value) =>
+            setPickedProducts((current) =>
+              current.includes(value)
+                ? current.filter((item) => item !== value)
+                : [...current, value],
+            )
+          }
           onOccasionChange={setPickedOccasion}
           onBudgetChange={setPickedBudget}
           onCustomToggle={(value) =>

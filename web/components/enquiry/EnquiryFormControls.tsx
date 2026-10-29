@@ -22,11 +22,15 @@ export function CheckboxGroup({
   name,
   options,
   checked,
+  selectedValues,
+  onToggle,
 }: {
   legend: string;
   name: string;
   options: { value: string; id: string; checked?: boolean }[];
   checked?: (option: { value: string; id: string }) => boolean;
+  selectedValues?: string[];
+  onToggle?: (value: string) => void;
 }) {
   return (
     <fieldset>
@@ -38,7 +42,13 @@ export function CheckboxGroup({
               type="checkbox"
               name={name}
               value={option.value}
-              defaultChecked={checked?.(option) ?? option.checked}
+              checked={selectedValues?.includes(option.value)}
+              defaultChecked={
+                selectedValues
+                  ? undefined
+                  : (checked?.(option) ?? option.checked)
+              }
+              onChange={onToggle ? () => onToggle(option.value) : undefined}
             />
             <span>{option.value}</span>
           </label>

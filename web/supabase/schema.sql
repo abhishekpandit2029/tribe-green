@@ -7,10 +7,9 @@ create table if not exists public.enquiries (
   occasion text not null,
   units integer not null check (units > 0),
   budget text not null,
-  delivery_date date,
   products text[] not null default '{}',
   customisations text[] not null default '{}',
-  message text not null default '',
+  gift_message text not null default '',
   source text not null check (source in ('Website', 'Mobile app')),
   status text not null default 'New' check (status in ('New', 'Contacted', 'Converted', 'Lost')),
   created_at timestamptz not null default now()

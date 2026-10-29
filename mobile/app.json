@@ -5,8 +5,20 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
-    "splash": { "backgroundColor": "#f8f6f0" },
-    "assetBundlePatterns": ["**/*"],
-    "android": { "package": "com.tribegreen.gifting", "versionCode": 1 }
+    "splash": {
+      "backgroundColor": "#f8f6f0"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "android": {
+      "package": "com.tribegreen.gifting",
+      "versionCode": 1
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8c7bd824-1d96-4945-b340-c247bdb71e67"
+      }
+    }
   }
 }

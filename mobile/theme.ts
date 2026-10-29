@@ -13,6 +13,7 @@ export const C = {
 export const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: C.paper },
   page: { paddingHorizontal: 20, paddingBottom: 32 },
+  enquiriesPage: { paddingTop: 33 },
   hero: {
     paddingTop: 33,
     paddingBottom: 38,
@@ -20,7 +21,7 @@ export const styles = StyleSheet.create({
     borderColor: C.line,
   },
   eyebrow: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: "700",
     letterSpacing: 1.45,
     color: "#73825a",
@@ -36,7 +37,7 @@ export const styles = StyleSheet.create({
   },
   italic: { fontStyle: "italic", color: C.lime },
   heroText: {
-    fontSize: 12,
+    fontSize: 13,
     lineHeight: 19,
     color: C.muted,
     maxWidth: 310,
@@ -55,7 +56,7 @@ export const styles = StyleSheet.create({
     height: 42,
     flex: 1,
     paddingHorizontal: 10,
-    fontSize: 11,
+    fontSize: 12,
     color: C.ink,
   },
   searchBox: {
@@ -87,7 +88,7 @@ export const styles = StyleSheet.create({
     backgroundColor: C.paper,
     paddingHorizontal: 7,
     paddingVertical: 5,
-    fontSize: 8,
+    fontSize: 10,
     color: C.ink,
   },
   cardArrow: {
@@ -100,7 +101,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   cardCategory: {
-    fontSize: 7,
+    fontSize: 9,
     letterSpacing: 1,
     color: "#85897c",
     marginTop: 10,
@@ -111,8 +112,8 @@ export const styles = StyleSheet.create({
     color: C.ink,
     marginTop: 4,
   },
-  cardPrice: { fontSize: 9, color: C.ink, marginTop: 6 },
-  perUnit: { fontSize: 8, color: "#85887d" },
+  cardPrice: { fontSize: 11, color: C.ink, marginTop: 6 },
+  perUnit: { fontSize: 10, color: "#85887d" },
   closing: {
     marginTop: 15,
     paddingTop: 26,
@@ -132,17 +133,17 @@ export const styles = StyleSheet.create({
     alignSelf: "flex-start",
     padding: 11,
   },
-  imageBadgeText: { fontSize: 8, letterSpacing: 1.1, color: C.ink },
+  imageBadgeText: { fontSize: 10, letterSpacing: 1.1, color: C.ink },
   detailTitle: {
     fontFamily: "Georgia",
     fontSize: 34,
     color: C.ink,
     marginTop: 12,
   },
-  detailDesc: { fontSize: 12, color: C.muted, lineHeight: 19, marginTop: 8 },
+  detailDesc: { fontSize: 13, color: C.muted, lineHeight: 19, marginTop: 8 },
   detailPrice: { fontSize: 18, color: C.ink, marginTop: 18, marginBottom: 21 },
   fieldTitle: {
-    fontSize: 8,
+    fontSize: 10,
     fontWeight: "700",
     letterSpacing: 1.3,
     color: "#73825a",
@@ -158,14 +159,14 @@ export const styles = StyleSheet.create({
     color: C.ink,
     marginTop: 14,
   },
-  formIntro: { fontSize: 11, color: C.muted, marginTop: 6, marginBottom: 20 },
+  formIntro: { fontSize: 12, color: C.muted, marginTop: 6, marginBottom: 20 },
   input: {
     height: 44,
     borderWidth: 1,
     borderColor: C.line,
     backgroundColor: C.white,
     paddingHorizontal: 12,
-    fontSize: 11,
+    fontSize: 12,
     color: C.ink,
     marginBottom: 9,
   },
@@ -175,7 +176,7 @@ export const styles = StyleSheet.create({
     paddingTop: 12,
     marginTop: 15,
   },
-  error: { fontSize: 10, color: "#a43c31", marginVertical: 4 },
+  error: { fontSize: 12, color: "#a43c31", marginVertical: 4 },
   center: {
     flex: 1,
     justifyContent: "center",
@@ -198,7 +199,7 @@ export const styles = StyleSheet.create({
     textAlign: "center",
   },
   bodyCenter: {
-    fontSize: 11,
+    fontSize: 12,
     color: C.muted,
     textAlign: "center",
     lineHeight: 19,
@@ -212,14 +213,14 @@ export const styles = StyleSheet.create({
     color: C.ink,
     marginTop: 13,
   },
-  bodyText: { fontSize: 10, color: C.muted, marginTop: 6 },
+  bodyText: { fontSize: 12, color: C.muted, marginTop: 6 },
   enquiryTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 8,
   },
-  enquiryId: { fontSize: 8, color: C.muted },
-  source: { fontSize: 8, color: C.lime, fontWeight: "700" },
+  enquiryId: { fontSize: 10, color: C.muted },
+  source: { fontSize: 10, color: C.lime, fontWeight: "700" },
 });
 
 export type AppStyles = typeof styles;

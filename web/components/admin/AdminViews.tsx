@@ -213,7 +213,11 @@ function AdminEnquiryRow({
         <span>{enquiry.occasion}</span>
         <span>{enquiry.products.join(", ") || "Gift ideas welcome"}</span>
       </div>
-      {enquiry.message && <p className="row-message">“{enquiry.message}”</p>}
+      {enquiry.giftMessage && (
+        <p className="row-message">
+          Gift message: “{enquiry.giftMessage}”
+        </p>
+      )}
     </article>
   );
 }

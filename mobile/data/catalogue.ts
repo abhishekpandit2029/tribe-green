@@ -190,10 +190,9 @@ export type Enquiry = {
   occasion: string;
   units: number;
   budget: string;
-  deliveryDate: string;
   products: string[];
   customisations: string[];
-  message: string;
+  giftMessage: string;
   source: "Website" | "Mobile app";
   status: "New" | "Contacted" | "Converted" | "Lost";
   createdAt: string;

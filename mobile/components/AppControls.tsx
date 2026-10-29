@@ -1,6 +1,12 @@
 import type { ComponentProps, ReactNode } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 
 const C = {
   paper: "#f8f6f0",
@@ -36,17 +42,31 @@ export function Pill({
 export function ActionButton({
   label,
   icon = "open-outline",
+  loading = false,
   onPress,
 }: {
   label: string;
   icon?: ComponentProps<typeof Ionicons>["name"];
+  loading?: boolean;
   onPress: () => void;
 }) {
+  const buttonLabel = loading ? "Submitting your enquiry…" : label;
+
   return (
-    <Pressable style={styles.darkButton} onPress={onPress}>
+    <Pressable
+      accessibilityRole="button"
+      accessibilityState={{ disabled: loading, busy: loading }}
+      disabled={loading}
+      style={[styles.darkButton, loading && styles.darkButtonLoading]}
+      onPress={onPress}
+    >
       <View style={styles.buttonContent}>
-        <Text style={styles.darkButtonText}>{label}</Text>
-        <Ionicons name={icon} size={14} color={C.white} />
+        <Text style={styles.darkButtonText}>{buttonLabel}</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color={C.white} />
+        ) : (
+          <Ionicons name={icon} size={14} color={C.white} />
+        )}
       </View>
     </Pressable>
   );
@@ -145,7 +165,7 @@ const styles = StyleSheet.create({
     backgroundColor: C.paper,
   },
   brand: { fontSize: 17, fontWeight: "700", letterSpacing: -0.5, color: C.ink },
-  brandSub: { fontSize: 7, letterSpacing: 1.4, color: C.muted, marginTop: 3 },
+  brandSub: { fontSize: 9, letterSpacing: 1.4, color: C.muted, marginTop: 3 },
   pill: {
     borderWidth: 1,
     borderColor: C.line,
@@ -155,7 +175,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   pillActive: { backgroundColor: C.green, borderColor: C.green },
-  pillText: { fontSize: 9, color: "#60665b" },
+  pillText: { fontSize: 11, color: "#60665b" },
   pillTextActive: { color: C.white },
   darkButton: {
     backgroundColor: C.green,
@@ -166,10 +186,11 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
     marginTop: 8,
   },
+  darkButtonLoading: { opacity: 0.75 },
   buttonContent: { flexDirection: "row", alignItems: "center", gap: 8 },
   darkButtonText: {
     color: C.white,
-    fontSize: 10,
+    fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.15,
   },
@@ -179,7 +200,7 @@ const styles = StyleSheet.create({
     gap: 6,
     marginVertical: 14,
   },
-  back: { fontSize: 10, color: C.muted },
+  back: { fontSize: 12, color: C.muted },
   tabbar: {
     height: 62,
     backgroundColor: C.paper,
@@ -190,7 +211,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   tab: { alignItems: "center", minWidth: 100 },
-  tabLabel: { fontSize: 8, color: "#929588", marginTop: 1 },
+  tabLabel: { fontSize: 10, color: "#929588", marginTop: 1 },
   tabSelected: { color: C.green },
   enquiryCard: {
     backgroundColor: C.white,
