@@ -1,4 +1,10 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
+
+const displayFont = Platform.select({
+  android: "serif",
+  ios: "Georgia",
+  default: "Georgia",
+});
 
 export const C = {
   paper: "#f8f6f0",
@@ -27,7 +33,7 @@ export const styles = StyleSheet.create({
     color: "#73825a",
   },
   heroTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 43,
     lineHeight: 47,
     color: C.ink,
@@ -45,7 +51,7 @@ export const styles = StyleSheet.create({
   },
   sectionHead: { paddingTop: 34, paddingBottom: 13 },
   sectionTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 33,
     lineHeight: 38,
     color: C.ink,
@@ -107,7 +113,7 @@ export const styles = StyleSheet.create({
     marginTop: 10,
   },
   cardTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 16,
     color: C.ink,
     marginTop: 4,
@@ -135,7 +141,7 @@ export const styles = StyleSheet.create({
   },
   imageBadgeText: { fontSize: 10, letterSpacing: 1.1, color: C.ink },
   detailTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 34,
     color: C.ink,
     marginTop: 12,
@@ -153,7 +159,7 @@ export const styles = StyleSheet.create({
   wrapPills: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
   formPage: { paddingHorizontal: 20, paddingBottom: 35 },
   formTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 41,
     lineHeight: 46,
     color: C.ink,
@@ -193,7 +199,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
   },
   serifTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 30,
     color: C.ink,
     textAlign: "center",
@@ -208,7 +214,7 @@ export const styles = StyleSheet.create({
   },
   empty: { alignItems: "center", paddingTop: 70 },
   emptyTitle: {
-    fontFamily: "Georgia",
+    fontFamily: displayFont,
     fontSize: 23,
     color: C.ink,
     marginTop: 13,
