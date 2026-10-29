@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
+  <rect width="1024" height="1024" fill="#f8f6f0" />
+  <circle cx="512" cy="512" r="326" stroke="#294d32" stroke-width="16" />
+  <text
+    x="512"
+    y="650"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="410"
+    font-style="italic"
+    letter-spacing="-34"
+  >
+    <tspan fill="#294d32">t</tspan><tspan fill="#92a24e">g</tspan>
+  </text>
+</svg>

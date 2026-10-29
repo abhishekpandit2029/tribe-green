@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/icon.png",
     "splash": {
       "backgroundColor": "#f8f6f0"
     },
@@ -13,7 +14,11 @@
     ],
     "android": {
       "package": "com.tribegreen.gifting",
-      "versionCode": 1
+      "versionCode": 1,
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#f8f6f0"
+      }
     },
     "extra": {
       "eas": {
